@@ -118,3 +118,113 @@ body {
     background-position: -200% 0;
   }
 }
+
+/* ==========================================================================
+   BOOTSTRAP 5.3 DARK MODE INTEGRATION & RESETS
+   ========================================================================== */
+[data-bs-theme="dark"],
+:root {
+  --bs-body-bg: #020508;
+  --bs-body-color: #f1f5f9;
+  --bs-card-bg: #070f0e;
+  --bs-card-border-color: rgba(16, 185, 129, 0.1);
+  --bs-tertiary-bg: #0d1a18;
+  --bs-secondary-bg: #070f0e;
+  --bs-border-color: rgba(16, 185, 129, 0.1);
+  --bs-table-bg: transparent;
+  --bs-table-color: #f1f5f9;
+  --bs-table-border-color: rgba(16, 185, 129, 0.1);
+  --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+  --bs-table-hover-bg: rgba(16, 185, 129, 0.05);
+  --bs-table-hover-color: #f1f5f9;
+}
+
+/* ── Universal Table & Bootstrap Reset for Dark Mode ── */
+.table,
+.table > :not(caption) > * > *,
+table,
+table > :not(caption) > * > * {
+  --bs-table-bg: transparent !important;
+  --bs-table-color: var(--text-primary, #f1f5f9) !important;
+  --bs-table-border-color: var(--border-color, rgba(16, 185, 129, 0.1)) !important;
+  background-color: transparent !important;
+  color: var(--text-primary, #f1f5f9) !important;
+  box-shadow: none !important;
+}
+
+.table thead th,
+table thead th {
+  background-color: transparent !important;
+  color: var(--text-secondary, #8e9fa6) !important;
+  border-bottom: 1px solid var(--border-color, rgba(16, 185, 129, 0.1)) !important;
+  box-shadow: none !important;
+}
+
+.table tbody td,
+table tbody td {
+  background-color: transparent !important;
+  color: var(--text-primary, #f1f5f9) !important;
+  border-bottom: 1px solid var(--border-color, rgba(16, 185, 129, 0.05)) !important;
+  box-shadow: none !important;
+}
+
+.table tbody tr:hover td,
+.table tbody tr:hover th,
+table tbody tr:hover td,
+table tbody tr:hover th {
+  background-color: rgba(16, 185, 129, 0.04) !important;
+  color: var(--text-primary, #f1f5f9) !important;
+}
+
+/* ── Bootstrap Card and Input Resets ── */
+.card {
+  background-color: var(--bg-surface, #070f0e) !important;
+  border-color: var(--border-color, rgba(16, 185, 129, 0.1)) !important;
+  color: var(--text-primary, #f1f5f9) !important;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--bg-deep, #020508) !important;
+  border-color: var(--border-color, rgba(16, 185, 129, 0.15)) !important;
+  color: var(--text-primary, #f1f5f9) !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+}
+
+/* ── Cyberpunk Glassmorphic Badge System ── */
+.badge.bg-danger-subtle {
+  background-color: rgba(239, 68, 68, 0.12) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.25) !important;
+}
+.badge.bg-warning-subtle {
+  background-color: rgba(245, 158, 11, 0.12) !important;
+  color: #f59e0b !important;
+  border: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+.badge.bg-info-subtle {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  color: #3b82f6 !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+.badge.bg-success-subtle {
+  background-color: rgba(16, 185, 129, 0.12) !important;
+  color: #10b981 !important;
+  border: 1px solid rgba(16, 185, 129, 0.25) !important;
+}
+.badge.bg-primary-subtle {
+  background-color: rgba(59, 130, 246, 0.12) !important;
+  color: #60a5fa !important;
+  border: 1px solid rgba(59, 130, 246, 0.25) !important;
+}
+.badge.bg-secondary-subtle {
+  background-color: rgba(148, 163, 184, 0.12) !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+}
+

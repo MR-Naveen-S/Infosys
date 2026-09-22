@@ -1,10 +1,10 @@
 # 🛡️ Security Operations Dashboard for Threat Detection with Risk Mitigation Analytics — Backend
 
-**Milestone 3 | Team A | Backend**
+**Milestones 1, 2, 3 & 4 (Complete) | Team A | Full-Stack Integration**
 
-A Flask-based backend for real-time security threat detection and risk intelligence using Machine Learning (Isolation Forest).
-Connects to MongoDB (`Security_db`) and exposes REST APIs for the Security Operations Dashboard.
-Covers all 3 milestones: **Data Pipeline → ML Detection → Risk Intelligence**.
+A Flask-based backend for real-time security threat detection and risk intelligence using Machine Learning (Isolation Forest `IF_v2`).
+Connects to MongoDB (`Security_db`) with high-fidelity CSV fallback and exposes REST APIs for the Security Operations Dashboard.
+Implements the full end-to-end pipeline: **Security Data (M1) → ML Anomaly Detection (M2) → 5-Factor Risk Engine & Correlation (M3) → REST APIs & Dashboard (M4)**.
 
 ---
 

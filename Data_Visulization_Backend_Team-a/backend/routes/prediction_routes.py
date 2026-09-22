@@ -68,17 +68,51 @@ def _load_model():
 
 
 # --------------------------------------------------
+# CSV fallback path for predictions
+# --------------------------------------------------
+_PREDICTIONS_CSV = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "processed", "prediction_results.csv")
+)
+
+def _load_predictions_data():
+    if os.path.exists(_PREDICTIONS_CSV):
+        try:
+            df = pd.read_csv(_PREDICTIONS_CSV)
+            df = df.fillna("")
+            return df
+        except Exception as e:
+            print("Error loading prediction CSV fallback:", e)
+    return pd.DataFrame()
+
+
+# --------------------------------------------------
 # GET /predictions
 # --------------------------------------------------
 
 @prediction_bp.route("/predictions", methods=["GET"])
 def get_predictions():
+    limit = request.args.get("limit", None)
     collection = get_predictions_collection()
-    if collection is None:
+    if collection is not None:
+        query = collection.find({}, {"_id": 0})
+        if limit:
+            try:
+                query = query.limit(int(limit))
+            except ValueError:
+                pass
+        predictions = list(query)
+        return jsonify(predictions)
+
+    df = _load_predictions_data()
+    if df.empty:
         return jsonify({"error": "Prediction database unavailable"}), 503
 
-    predictions = list(collection.find({}, {"_id": 0}))
-    return jsonify(predictions)
+    if limit:
+        try:
+            df = df.head(int(limit))
+        except ValueError:
+            pass
+    return jsonify(df.to_dict(orient="records"))
 
 
 # --------------------------------------------------
@@ -88,14 +122,19 @@ def get_predictions():
 @prediction_bp.route("/predictions/<event_id>", methods=["GET"])
 def get_prediction_by_event(event_id):
     collection = get_predictions_collection()
-    if collection is None:
-        return jsonify({"error": "Prediction database unavailable"}), 503
+    if collection is not None:
+        prediction = collection.find_one({"event_id": event_id}, {"_id": 0})
+        if prediction is None:
+            return jsonify({"error": "Prediction not found"}), 404
+        return jsonify(prediction)
 
-    prediction = collection.find_one({"event_id": event_id}, {"_id": 0})
-    if prediction is None:
-        return jsonify({"error": "Prediction not found"}), 404
+    df = _load_predictions_data()
+    if not df.empty:
+        match = df[df["event_id"] == event_id]
+        if not match.empty:
+            return jsonify(match.iloc[0].to_dict())
 
-    return jsonify(prediction)
+    return jsonify({"error": "Prediction not found"}), 404
 
 
 # --------------------------------------------------
@@ -106,17 +145,34 @@ def get_prediction_by_event(event_id):
 
 @prediction_bp.route("/anomalies", methods=["GET"])
 def get_anomalies():
+    limit = request.args.get("limit", None)
     collection = get_predictions_collection()
-    if collection is None:
-        return jsonify({"error": "Prediction database unavailable"}), 503
-
-    anomalies = list(
-        collection.find(
+    if collection is not None:
+        query = collection.find(
             {"prediction": "Suspicious"},
             {"_id": 0}
         ).sort("anomaly_score", 1)   # ascending → lowest (most negative) first
-    )
-    return jsonify(anomalies)
+        if limit:
+            try:
+                query = query.limit(int(limit))
+            except ValueError:
+                pass
+        anomalies = list(query)
+        return jsonify(anomalies)
+
+    df = _load_predictions_data()
+    if df.empty:
+        return jsonify({"error": "Prediction database unavailable"}), 503
+
+    anomalies = df[df["prediction"] == "Suspicious"]
+    if "anomaly_score" in anomalies.columns:
+        anomalies = anomalies.sort_values("anomaly_score", ascending=True)
+    if limit:
+        try:
+            anomalies = anomalies.head(int(limit))
+        except ValueError:
+            pass
+    return jsonify(anomalies.to_dict(orient="records"))
 
 
 # --------------------------------------------------
@@ -128,20 +184,63 @@ def get_anomalies():
 @prediction_bp.route("/model-performance", methods=["GET"])
 def get_model_performance():
     collection = get_predictions_collection()
-    if collection is None:
+    if collection is not None:
+        total = collection.count_documents({})
+        normal_count    = collection.count_documents({"prediction": "Normal"})
+        suspicious_count = collection.count_documents({"prediction": "Suspicious"})
+        suspicious_pct  = round((suspicious_count / total * 100), 2) if total else 0
+
+        # Anomaly score statistics
+        scores = [
+            doc["anomaly_score"]
+            for doc in collection.find({}, {"anomaly_score": 1, "_id": 0})
+            if isinstance(doc.get("anomaly_score"), (int, float))
+        ]
+
+        score_stats = {}
+        if scores:
+            arr = np.array(scores)
+            score_stats = {
+                "min":    round(float(arr.min()), 6),
+                "max":    round(float(arr.max()), 6),
+                "mean":   round(float(arr.mean()), 6),
+                "median": round(float(np.median(arr)), 6),
+                "std":    round(float(arr.std()), 6)
+            }
+
+        # Grab model_version from any record
+        sample = collection.find_one({}, {"model_version": 1, "_id": 0})
+        model_version = sample.get("model_version", MODEL_VERSION) if sample else MODEL_VERSION
+
+        return jsonify({
+            "model_type":           "Isolation Forest (unsupervised)",
+            "model_version":        model_version,
+            "total_predictions":    total,
+            "normal_count":         normal_count,
+            "suspicious_count":     suspicious_count,
+            "suspicious_percentage": suspicious_pct,
+            "anomaly_score_stats":  score_stats,
+            "note": (
+                "Isolation Forest is an unsupervised model. "
+                "Accuracy / Precision / Recall / F1 are not applicable without ground-truth labels."
+            )
+        })
+
+    df = _load_predictions_data()
+    if df.empty:
         return jsonify({"error": "Prediction database unavailable"}), 503
 
-    total = collection.count_documents({})
-    normal_count    = collection.count_documents({"prediction": "Normal"})
-    suspicious_count = collection.count_documents({"prediction": "Suspicious"})
-    suspicious_pct  = round((suspicious_count / total * 100), 2) if total else 0
+    total = len(df)
+    normal_count = int((df["prediction"] == "Normal").sum())
+    suspicious_count = int((df["prediction"] == "Suspicious").sum())
+    suspicious_pct = round((suspicious_count / total * 100), 2) if total else 0
 
-    # Anomaly score statistics
-    scores = [
-        doc["anomaly_score"]
-        for doc in collection.find({}, {"anomaly_score": 1, "_id": 0})
-        if isinstance(doc.get("anomaly_score"), (int, float))
-    ]
+    scores = []
+    for s in df["anomaly_score"]:
+        try:
+            scores.append(float(s))
+        except (ValueError, TypeError):
+            pass
 
     score_stats = {}
     if scores:
@@ -154,9 +253,7 @@ def get_model_performance():
             "std":    round(float(arr.std()), 6)
         }
 
-    # Grab model_version from any record
-    sample = collection.find_one({}, {"model_version": 1, "_id": 0})
-    model_version = sample.get("model_version", "IF_v1") if sample else "IF_v1"
+    model_version = str(df["model_version"].iloc[0]) if "model_version" in df.columns and len(df) > 0 else MODEL_VERSION
 
     return jsonify({
         "model_type":           "Isolation Forest (unsupervised)",
@@ -181,28 +278,45 @@ def get_model_performance():
 @prediction_bp.route("/threat-summary", methods=["GET"])
 def get_threat_summary():
     collection = get_predictions_collection()
-    if collection is None:
+    if collection is not None:
+        total = collection.count_documents({})
+        normal_count    = collection.count_documents({"prediction": "Normal"})
+        suspicious_count = collection.count_documents({"prediction": "Suspicious"})
+
+        # Counts by severity
+        sev_pipeline = [
+            {"$group": {"_id": "$severity", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        sev_result = list(collection.aggregate(sev_pipeline))
+        severity_counts = {r["_id"]: r["count"] for r in sev_result if r["_id"]}
+
+        # Counts by threat_type
+        type_pipeline = [
+            {"$group": {"_id": "$threat_type", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        type_result = list(collection.aggregate(type_pipeline))
+        threat_type_counts = {r["_id"]: r["count"] for r in type_result if r["_id"]}
+
+        return jsonify({
+            "total_predictions":  total,
+            "normal_count":       normal_count,
+            "suspicious_count":   suspicious_count,
+            "by_severity":        severity_counts,
+            "by_threat_type":     threat_type_counts
+        })
+
+    df = _load_predictions_data()
+    if df.empty:
         return jsonify({"error": "Prediction database unavailable"}), 503
 
-    total = collection.count_documents({})
-    normal_count    = collection.count_documents({"prediction": "Normal"})
-    suspicious_count = collection.count_documents({"prediction": "Suspicious"})
+    total = len(df)
+    normal_count = int((df["prediction"] == "Normal").sum())
+    suspicious_count = int((df["prediction"] == "Suspicious").sum())
 
-    # Counts by severity
-    sev_pipeline = [
-        {"$group": {"_id": "$severity", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]
-    sev_result = list(collection.aggregate(sev_pipeline))
-    severity_counts = {r["_id"]: r["count"] for r in sev_result if r["_id"]}
-
-    # Counts by threat_type
-    type_pipeline = [
-        {"$group": {"_id": "$threat_type", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}}
-    ]
-    type_result = list(collection.aggregate(type_pipeline))
-    threat_type_counts = {r["_id"]: r["count"] for r in type_result if r["_id"]}
+    severity_counts = {str(k): int(v) for k, v in df["severity"].value_counts().to_dict().items()} if "severity" in df.columns else {}
+    threat_type_counts = {str(k): int(v) for k, v in df["threat_type"].value_counts().to_dict().items()} if "threat_type" in df.columns else {}
 
     return jsonify({
         "total_predictions":  total,

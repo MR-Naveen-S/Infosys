@@ -258,7 +258,52 @@ export default function EventDetails({ event, events = [], onSelectEvent, theme 
           from { transform: rotate(0deg); }
           to   { transform: rotate(360deg); }
         }
-        
+
+        /* ── LIGHT THEME COMPLETE OVERRIDES ── */
+        .light-theme .lookup-card {
+          background-color: #ffffff !important;
+          border: 1px solid #e2e8f0 !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+        }
+        .light-theme .verdict-banner {
+          background-color: #ffffff !important;
+          border: 1px solid #e2e8f0 !important;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04) !important;
+        }
+        .light-theme .input-investigate-box {
+          background-color: #f8fafc !important;
+          border: 1px solid #cbd5e1 !important;
+          color: #0f172a !important;
+        }
+        .light-theme .input-investigate-box:focus {
+          border-color: #059669 !important;
+          box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+        }
+        .light-theme .chip-btn {
+          background-color: #f1f5f9 !important;
+          border: 1px solid #cbd5e1 !important;
+          color: #334155 !important;
+        }
+        .light-theme .chip-btn:hover, .light-theme .chip-btn.active {
+          background-color: #ecfdf5 !important;
+          border-color: #059669 !important;
+          color: #047857 !important;
+          font-weight: 700 !important;
+        }
+        .light-theme .btn-investigate-cta {
+          background: linear-gradient(135deg, #059669, #047857) !important;
+          color: #ffffff !important;
+          box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25) !important;
+        }
+        .light-theme .lookup-title {
+          color: #0f172a !important;
+        }
+        .light-theme .verdict-label {
+          color: #64748b !important;
+        }
+        .light-theme .verdict-val {
+          color: #0f172a !important;
+        }
       `}</style>
 
       {/* ── SECTION 1: SEARCH & LOOKUP PANEL ───────────────────────────── */}

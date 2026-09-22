@@ -125,55 +125,22 @@ export default function IncidentDetails({
     return '#10b981';
   };
 
-  const getCategoryBadgeStyle = (category) => {
+  const getCategoryBadgeClass = (category) => {
     const cat = (category || '').toLowerCase();
-    if (cat.includes('containment')) {
-      return {
-        background: 'rgba(239, 68, 68, 0.12)',
-        color: '#f87171',
-        border: '1px solid rgba(239, 68, 68, 0.28)'
-      };
-    }
-    if (cat.includes('forensics')) {
-      return {
-        background: 'rgba(6, 182, 212, 0.12)',
-        color: '#38bdf8',
-        border: '1px solid rgba(6, 182, 212, 0.28)'
-      };
-    }
-    if (cat.includes('recovery')) {
-      return {
-        background: 'rgba(16, 185, 129, 0.12)',
-        color: '#34d399',
-        border: '1px solid rgba(16, 185, 129, 0.28)'
-      };
-    }
-    if (cat.includes('network')) {
-      return {
-        background: 'rgba(245, 158, 11, 0.12)',
-        color: '#fbbf24',
-        border: '1px solid rgba(245, 158, 11, 0.28)'
-      };
-    }
-    if (cat.includes('identity')) {
-      return {
-        background: 'rgba(168, 85, 247, 0.12)',
-        color: '#c084fc',
-        border: '1px solid rgba(168, 85, 247, 0.28)'
-      };
-    }
-    if (cat.includes('dlp') || cat.includes('email')) {
-      return {
-        background: 'rgba(236, 72, 153, 0.12)',
-        color: '#f472b6',
-        border: '1px solid rgba(236, 72, 153, 0.28)'
-      };
-    }
-    return {
-      background: 'rgba(59, 130, 246, 0.12)',
-      color: '#60a5fa',
-      border: '1px solid rgba(59, 130, 246, 0.28)'
-    };
+    if (cat.includes('containment')) return 'badge-cat-containment';
+    if (cat.includes('forensics')) return 'badge-cat-forensics';
+    if (cat.includes('recovery')) return 'badge-cat-recovery';
+    if (cat.includes('network')) return 'badge-cat-network';
+    if (cat.includes('identity')) return 'badge-cat-identity';
+    return 'badge-cat-default';
+  };
+
+  const getPriorityBadgeClass = (priority) => {
+    const prio = (priority || '').toLowerCase();
+    if (prio.includes('critical')) return 'badge-prio-critical';
+    if (prio.includes('high')) return 'badge-prio-high';
+    if (prio.includes('medium')) return 'badge-prio-medium';
+    return 'badge-prio-low';
   };
 
   const getCategoryIcon = (category) => {
@@ -285,9 +252,9 @@ export default function IncidentDetails({
           box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
         }
         .playbook-card {
-          background: rgba(13, 21, 32, 0.78);
+          background: rgba(13, 21, 32, 0.85);
           backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 16px;
           padding: 24px 28px;
           margin-bottom: 24px;
@@ -295,28 +262,29 @@ export default function IncidentDetails({
           position: relative;
         }
         .playbook-header-icon {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-          background: rgba(16, 185, 129, 0.12);
-          border: 1px solid rgba(16, 185, 129, 0.28);
+          width: 44px;
+          height: 44px;
+          border-radius: 12px;
+          background: rgba(16, 185, 129, 0.14);
+          border: 1px solid rgba(16, 185, 129, 0.3);
           display: flex;
           align-items: center;
           justify-content: center;
           color: #10b981;
           flex-shrink: 0;
+          box-shadow: 0 0 16px rgba(16, 185, 129, 0.15);
         }
         .playbook-header-tag {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 2.5px 9px;
+          padding: 3px 10px;
           border-radius: 20px;
-          background: rgba(16, 185, 129, 0.1);
-          border: 1px solid rgba(16, 185, 129, 0.28);
+          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.3);
           color: #34d399;
           font-family: 'JetBrains Mono', monospace;
-          font-size: 10.5px;
+          font-size: 11px;
           font-weight: 700;
           letter-spacing: 0.04em;
         }
@@ -324,105 +292,105 @@ export default function IncidentDetails({
           display: inline-flex;
           align-items: center;
           gap: 10px;
-          padding: 6px 14px;
+          padding: 7px 16px;
           border-radius: 24px;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .playbook-btn-exec-all {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          padding: 7px 16px;
-          border-radius: 8px;
-          font-size: 12px;
+          gap: 7px;
+          padding: 8px 18px;
+          border-radius: 10px;
+          font-size: 12.5px;
           font-weight: 700;
           background: linear-gradient(135deg, #10b981 0%, #059669 100%);
           color: #ffffff !important;
           border: 1px solid #10b981;
           cursor: pointer;
           transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+          box-shadow: 0 2px 12px rgba(16, 185, 129, 0.35);
         }
         .playbook-btn-exec-all:hover {
           transform: translateY(-1px);
-          box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5);
-          filter: brightness(1.08);
+          box-shadow: 0 4px 20px rgba(16, 185, 129, 0.55);
+          filter: brightness(1.1);
         }
         .playbook-btn-reset {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 7px 14px;
-          border-radius: 8px;
-          font-size: 12px;
+          padding: 8px 16px;
+          border-radius: 10px;
+          font-size: 12.5px;
           font-weight: 600;
-          background: rgba(255, 255, 255, 0.04);
+          background: rgba(255, 255, 255, 0.05);
           color: #94a3b8;
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .playbook-btn-reset:hover {
           color: #f1f5f9;
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.22);
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.25);
         }
         .playbook-step-card {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 20px;
-          border-radius: 12px;
-          background: rgba(16, 25, 38, 0.65);
-          border: 1px solid rgba(255, 255, 255, 0.07);
-          border-left: 3.5px solid var(--step-accent, #3b82f6);
+          padding: 18px 22px;
+          border-radius: 14px;
+          background: rgba(16, 25, 38, 0.7);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-left: 4px solid var(--step-accent, #3b82f6);
           transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
           cursor: pointer;
-          gap: 18px;
+          gap: 20px;
         }
         .playbook-step-card:hover {
-          background: rgba(22, 34, 52, 0.85);
-          border-color: rgba(255, 255, 255, 0.15);
+          background: rgba(22, 34, 52, 0.9);
+          border-color: rgba(255, 255, 255, 0.18);
           border-left-color: var(--step-accent, #3b82f6);
-          transform: translateY(-1.5px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+          transform: translateY(-2px);
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
         }
         .playbook-step-card.executed {
-          background: rgba(16, 185, 129, 0.05);
-          border-color: rgba(16, 185, 129, 0.25);
+          background: rgba(16, 185, 129, 0.06);
+          border-color: rgba(16, 185, 129, 0.28);
           border-left-color: #10b981 !important;
         }
         .playbook-step-num {
-          width: 36px;
-          height: 36px;
+          width: 38px;
+          height: 38px;
           border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
           font-family: 'JetBrains Mono', monospace;
-          font-weight: 700;
-          font-size: 13px;
+          font-weight: 800;
+          font-size: 13.5px;
           flex-shrink: 0;
-          background: rgba(255, 255, 255, 0.04);
-          color: #94a3b8;
-          border: 1px solid rgba(255, 255, 255, 0.09);
+          background: rgba(255, 255, 255, 0.05);
+          color: #cbd5e1;
+          border: 1px solid rgba(255, 255, 255, 0.12);
           transition: all 0.2s ease;
         }
         .playbook-step-card:hover .playbook-step-num {
           color: #ffffff;
-          border-color: rgba(255, 255, 255, 0.25);
-          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.3);
+          background: rgba(255, 255, 255, 0.1);
         }
         .playbook-step-card.executed .playbook-step-num {
           background: #10b981;
           color: #ffffff;
           border-color: #10b981;
-          box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
+          box-shadow: 0 0 14px rgba(16, 185, 129, 0.5);
         }
         .playbook-task-title {
-          font-size: 14.5px;
-          font-weight: 600;
+          font-size: 15px;
+          font-weight: 700;
           color: #f8fafc;
           line-height: 1.35;
           margin: 0;
@@ -433,7 +401,7 @@ export default function IncidentDetails({
           text-decoration: line-through;
         }
         .playbook-task-desc {
-          font-size: 12.5px;
+          font-size: 13px;
           color: #94a3b8;
           margin: 4px 0 0 0;
           line-height: 1.4;
@@ -441,14 +409,14 @@ export default function IncidentDetails({
         .playbook-btn-action {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          padding: 8px 18px;
-          border-radius: 8px;
-          font-size: 12px;
+          gap: 7px;
+          padding: 9px 20px;
+          border-radius: 9px;
+          font-size: 12.5px;
           font-weight: 700;
           letter-spacing: 0.02em;
-          border: 1px solid rgba(16, 185, 129, 0.35);
-          background: rgba(16, 185, 129, 0.12);
+          border: 1px solid rgba(16, 185, 129, 0.4);
+          background: rgba(16, 185, 129, 0.14);
           color: #34d399;
           transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
           white-space: nowrap;
@@ -458,64 +426,226 @@ export default function IncidentDetails({
           background: linear-gradient(135deg, #10b981, #059669);
           border-color: #10b981;
           color: #ffffff;
-          box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+          box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
           transform: translateY(-1px);
         }
         .playbook-btn-completed {
           display: inline-flex;
           align-items: center;
-          gap: 6px;
-          padding: 8px 18px;
-          border-radius: 8px;
-          font-size: 12px;
+          gap: 7px;
+          padding: 9px 20px;
+          border-radius: 9px;
+          font-size: 12.5px;
           font-weight: 700;
           border: 1px solid rgba(16, 185, 129, 0.4);
-          background: rgba(16, 185, 129, 0.15);
+          background: rgba(16, 185, 129, 0.18);
           color: #34d399;
           white-space: nowrap;
           cursor: pointer;
           transition: all 0.2s ease;
         }
         .playbook-btn-completed:hover {
-          background: rgba(239, 68, 68, 0.15);
-          border-color: rgba(239, 68, 68, 0.4);
+          background: rgba(239, 68, 68, 0.18);
+          border-color: rgba(239, 68, 68, 0.45);
           color: #f87171;
         }
+
+        /* ── LIGHT THEME COMPLETE OVERRIDES ── */
         .light-theme .playbook-card {
-          background: #ffffff;
-          border: 1px solid #e2e8f0;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+          background: #ffffff !important;
+          border: 1px solid #e2e8f0 !important;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+        }
+        .light-theme .playbook-header-icon {
+          background: #ecfdf5 !important;
+          border-color: #a7f3d0 !important;
+          color: #059669 !important;
+          box-shadow: 0 2px 8px rgba(5, 150, 105, 0.12) !important;
+        }
+        .light-theme .playbook-header-tag {
+          background: #ecfdf5 !important;
+          border-color: #a7f3d0 !important;
+          color: #047857 !important;
         }
         .light-theme .playbook-progress-pill {
-          background: #f1f5f9;
-          border-color: #e2e8f0;
+          background: #f8fafc !important;
+          border-color: #e2e8f0 !important;
+        }
+        .light-theme .playbook-btn-reset {
+          background: #f8fafc !important;
+          color: #475569 !important;
+          border-color: #cbd5e1 !important;
+        }
+        .light-theme .playbook-btn-reset:hover {
+          background: #e2e8f0 !important;
+          color: #0f172a !important;
         }
         .light-theme .playbook-step-card {
-          background: #f8fafc;
-          border-color: #e2e8f0;
+          background: #f8fafc !important;
+          border: 1px solid #e2e8f0 !important;
+          border-left: 4px solid var(--step-accent, #3b82f6) !important;
         }
         .light-theme .playbook-step-card:hover {
-          background: #ffffff;
-          border-color: #cbd5e1;
-          box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+          background: #ffffff !important;
+          border-color: #cbd5e1 !important;
+          border-left-color: var(--step-accent, #3b82f6) !important;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08) !important;
         }
         .light-theme .playbook-step-card.executed {
-          background: #f0fdf4;
-          border-color: #bbf7d0;
-        }
-        .light-theme .playbook-task-title {
-          color: #0f172a;
+          background: #f0fdf4 !important;
+          border-color: #bbf7d0 !important;
+          border-left-color: #059669 !important;
         }
         .light-theme .playbook-step-num {
-          background: #e2e8f0;
-          color: #475569;
-          border-color: #cbd5e1;
+          background: #f1f5f9 !important;
+          color: #0f172a !important;
+          border-color: #cbd5e1 !important;
+          font-weight: 800 !important;
         }
-        .light-theme .playbook-btn-execute {
-          background: #ffffff;
-          border-color: #cbd5e1;
-          color: #1e293b;
+        .light-theme .playbook-step-card:hover .playbook-step-num {
+          background: #e2e8f0 !important;
+          color: #0f172a !important;
+          border-color: #94a3b8 !important;
         }
+        .light-theme .playbook-task-title {
+          color: #0f172a !important;
+        }
+        .light-theme .playbook-task-desc {
+          color: #475569 !important;
+        }
+        .light-theme .playbook-btn-action {
+          background: #ecfdf5 !important;
+          color: #047857 !important;
+          border: 1.5px solid #059669 !important;
+          box-shadow: 0 1px 3px rgba(5, 150, 105, 0.12) !important;
+        }
+        .light-theme .playbook-btn-action:hover {
+          background: linear-gradient(135deg, #059669, #047857) !important;
+          border-color: #047857 !important;
+          color: #ffffff !important;
+          box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35) !important;
+        }
+        .light-theme .playbook-btn-completed {
+          background: #f0fdf4 !important;
+          color: #15803d !important;
+          border: 1.5px solid #86efac !important;
+        }
+        .light-theme .playbook-btn-completed:hover {
+          background: #fee2e2 !important;
+          border-color: #fca5a5 !important;
+          color: #b91c1c !important;
+        }
+
+        /* ── CATEGORY & PRIORITY BADGES (DARK MODE) ── */
+        .badge-cat-containment {
+          background: rgba(239, 68, 68, 0.16) !important;
+          color: #f87171 !important;
+          border: 1px solid rgba(239, 68, 68, 0.35) !important;
+        }
+        .badge-cat-forensics {
+          background: rgba(6, 182, 212, 0.16) !important;
+          color: #38bdf8 !important;
+          border: 1px solid rgba(6, 182, 212, 0.35) !important;
+        }
+        .badge-cat-recovery {
+          background: rgba(16, 185, 129, 0.16) !important;
+          color: #34d399 !important;
+          border: 1px solid rgba(16, 185, 129, 0.35) !important;
+        }
+        .badge-cat-network {
+          background: rgba(245, 158, 11, 0.16) !important;
+          color: #fbbf24 !important;
+          border: 1px solid rgba(245, 158, 11, 0.35) !important;
+        }
+        .badge-cat-identity {
+          background: rgba(168, 85, 247, 0.16) !important;
+          color: #c084fc !important;
+          border: 1px solid rgba(168, 85, 247, 0.35) !important;
+        }
+        .badge-cat-default {
+          background: rgba(59, 130, 246, 0.16) !important;
+          color: #60a5fa !important;
+          border: 1px solid rgba(59, 130, 246, 0.35) !important;
+        }
+
+        .badge-prio-critical {
+          background: rgba(239, 68, 68, 0.16) !important;
+          color: #ef4444 !important;
+          border: 1px solid rgba(239, 68, 68, 0.35) !important;
+        }
+        .badge-prio-high {
+          background: rgba(245, 158, 11, 0.16) !important;
+          color: #f59e0b !important;
+          border: 1px solid rgba(245, 158, 11, 0.35) !important;
+        }
+        .badge-prio-medium {
+          background: rgba(59, 130, 246, 0.16) !important;
+          color: #3b82f6 !important;
+          border: 1px solid rgba(59, 130, 246, 0.35) !important;
+        }
+        .badge-prio-low {
+          background: rgba(16, 185, 129, 0.16) !important;
+          color: #10b981 !important;
+          border: 1px solid rgba(16, 185, 129, 0.35) !important;
+        }
+
+        /* ── CATEGORY & PRIORITY BADGES (LIGHT MODE) ── */
+        .light-theme .badge-cat-containment {
+          background: #fee2e2 !important;
+          color: #dc2626 !important;
+          border: 1px solid #fca5a5 !important;
+        }
+        .light-theme .badge-cat-forensics {
+          background: #e0f2fe !important;
+          color: #0284c7 !important;
+          border: 1px solid #7dd3fc !important;
+        }
+        .light-theme .badge-cat-recovery {
+          background: #dcfce7 !important;
+          color: #15803d !important;
+          border: 1px solid #86efac !important;
+        }
+        .light-theme .badge-cat-network {
+          background: #fef3c7 !important;
+          color: #b45309 !important;
+          border: 1px solid #fcd34d !important;
+        }
+        .light-theme .badge-cat-identity {
+          background: #f3e8ff !important;
+          color: #7e22ce !important;
+          border: 1px solid #d8b4fe !important;
+        }
+        .light-theme .badge-cat-default {
+          background: #e0f2fe !important;
+          color: #0369a1 !important;
+          border: 1px solid #93c5fd !important;
+        }
+
+        .light-theme .badge-prio-critical {
+          background: #fee2e2 !important;
+          color: #991b1b !important;
+          border: 1px solid #f87171 !important;
+          font-weight: 700 !important;
+        }
+        .light-theme .badge-prio-high {
+          background: #fef3c7 !important;
+          color: #92400e !important;
+          border: 1px solid #fbbf24 !important;
+          font-weight: 700 !important;
+        }
+        .light-theme .badge-prio-medium {
+          background: #e0f2fe !important;
+          color: #075985 !important;
+          border: 1px solid #38bdf8 !important;
+          font-weight: 700 !important;
+        }
+        .light-theme .badge-prio-low {
+          background: #dcfce7 !important;
+          color: #14532d !important;
+          border: 1px solid #4ade80 !important;
+          font-weight: 700 !important;
+        }
+
         .intel-card-box {
           background-color: var(--bg-surface);
           border: 1px solid var(--border-color);
@@ -816,7 +946,8 @@ export default function IncidentDetails({
         {/* Playbook Action Step Cards */}
         <div className="d-flex flex-column gap-2.5">
           {recommendations.map((rec, idx) => {
-            const catStyle = getCategoryBadgeStyle(rec.category);
+            const catClass = getCategoryBadgeClass(rec.category);
+            const prioClass = getPriorityBadgeClass(rec.priority);
             const prioColor = getPriorityColor(rec.priority);
             const catIcon = getCategoryIcon(rec.category);
             const stepNumStr = String(idx + 1).padStart(2, '0');
@@ -841,9 +972,8 @@ export default function IncidentDetails({
                   {/* Task Content */}
                   <div className="flex-grow-1">
                     <div className="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                      <span className="badge font-mono text-uppercase px-2 py-0.5 rounded d-inline-flex align-items-center gap-1" style={{
-                        ...catStyle,
-                        fontSize: '10px',
+                      <span className={`badge font-mono text-uppercase px-2.5 py-1 rounded d-inline-flex align-items-center gap-1.5 ${catClass}`} style={{
+                        fontSize: '10.5px',
                         letterSpacing: '0.04em',
                         fontWeight: '700'
                       }}>
@@ -851,12 +981,10 @@ export default function IncidentDetails({
                         <span>{rec.category}</span>
                       </span>
 
-                      <span className="badge font-mono px-2 py-0.5 rounded text-uppercase" style={{
-                        background: `${prioColor}14`,
-                        color: prioColor,
-                        border: `1px solid ${prioColor}30`,
-                        fontSize: '9.5px',
-                        fontWeight: '700'
+                      <span className={`badge font-mono px-2.5 py-1 rounded text-uppercase ${prioClass}`} style={{
+                        fontSize: '10px',
+                        fontWeight: '700',
+                        letterSpacing: '0.02em'
                       }}>
                         ● {rec.priority} Priority
                       </span>
@@ -929,7 +1057,7 @@ export default function IncidentDetails({
                 {localIncident.correlated_events.map(evt => (
                   <tr key={evt.id || evt.event_id}>
                     <td className="font-mono text-success fw-bold">{evt.id || evt.event_id}</td>
-                    <td className="fw-semibold text-white">{evt.name || evt.event_type}</td>
+                    <td className="fw-semibold" style={{ color: 'var(--text-primary)' }}>{evt.name || evt.event_type}</td>
                     <td className="font-mono text-info small">{evt.source || evt.source_ip}</td>
                     <td className="font-mono text-secondary small">{evt.target || evt.destination_ip}</td>
                     <td>

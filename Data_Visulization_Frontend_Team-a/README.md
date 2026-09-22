@@ -94,21 +94,29 @@ http://localhost:3000
 
 ---
 
-## 📑 Milestone Roadmap
+## 📑 Milestone Roadmap & Status
 
-- **Milestone 1:** Core Data Aggregation, SOC Analyst Authentication, Overview KPI Cards, Chronological Event Logs, and Severity Distribution Charts.
-- **Milestone 2:** Machine Learning Anomaly Detection, Explainable AI (XAI) Attribution, Confidence Radial Gauges, and Event Investigation Triage.
-- **Milestone 3:** Multi-Factor Risk Mitigation Analytics, Attack Chain Correlation, MITRE ATT&CK Matrix Mapping, and Automated Playbook Execution.
+- **✅ Milestone 1:** Core Data Normalization, SOC Analyst Authentication, Overview KPI Cards, Chronological Event Logs, and Severity Distribution Charts.
+- **✅ Milestone 2:** Machine Learning Anomaly Detection (Isolation Forest `IF_v2`), Explainable AI (XAI) Attribution, Confidence Radial Gauges, and Event Investigation Triage.
+- **✅ Milestone 3:** 5-Factor Risk Mitigation Engine, Attack Chain Correlation, MITRE ATT&CK Matrix Mapping, and Incident Prioritization Playbooks.
+- **✅ Milestone 4 (Final Integration):** Full-Stack End-to-End Platform Integration uniting M1, M2, and M3 into a production-grade Cybersecurity SOC Platform:
+  - **Module 4.1:** Dashboard Architecture & Session Management (Dark/Light SOC themes, Role-based auth)
+  - **Module 4.2:** Security Overview Dashboard (Real-time telemetry counters, 7-day x 24-hr heatmap, live terminal)
+  - **Module 4.3:** Threat Investigation (Multi-vector search, event triage sheet, Isolation Forest XAI breakdown)
+  - **Module 4.4:** Attack Chains & Threat Intelligence (Correlated breach graphs, MITRE ATT&CK mapping, IOC feeds)
+  - **Module 4.5:** Dynamic 5-Factor Risk Engine & Incident Workflow (Real-time recalculation, analyst feedback)
+  - **Module 4.6:** Automated Testing & Unified Serving (`test_all_endpoints.py`, `start_project.py`)
 
 ---
 
 ## 👥 Engineering Team
 
-Developed by **Data Visualization Frontend Team A** — Infosys Internship 2026.
+Developed by **NAVEEN S & Team A** — Infosys Springboard Cybersecurity Internship 2026.
 
 ---
 
 ## 📄 License
 
-This project is licensed under the terms of the [MIT License](file:///c:/Data_Visulization_Frontend_Team-a/LICENSE).
+This project is licensed under the terms of the MIT License.
+
 

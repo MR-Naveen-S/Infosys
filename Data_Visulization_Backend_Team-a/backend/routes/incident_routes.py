@@ -259,3 +259,54 @@ def get_recommendations_for_incident(incident_id):
         "priority":     incident.get("priority", ""),
         "recommendation": recs
     })
+
+
+# --------------------------------------------------
+# POST /api/v1/incidents/<incident_id>/status
+# Update incident status and analyst feedback
+# --------------------------------------------------
+
+@incident_bp.route("/incidents/<incident_id>/status", methods=["POST", "PUT", "PATCH"])
+@incident_bp.route("/incidents/<incident_id>", methods=["PATCH", "PUT"])
+def update_incident_status(incident_id):
+    data = request.get_json(silent=True) or {}
+    new_status = data.get("status")
+    feedback = data.get("feedback") or data.get("analyst_feedback")
+
+    col = get_incidents_collection()
+    if col is not None:
+        try:
+            update_fields = {}
+            if new_status:
+                update_fields["status"] = new_status
+            if feedback:
+                update_fields["analyst_feedback"] = feedback
+            col.update_one({"incident_id": incident_id}, {"$set": update_fields})
+            return jsonify({
+                "success": True,
+                "incident_id": incident_id,
+                "status": new_status,
+                "feedback": feedback
+            })
+        except Exception:
+            pass
+
+    # CSV fallback update
+    if os.path.exists(_INCIDENTS_CSV):
+        try:
+            df = pd.read_csv(_INCIDENTS_CSV)
+            if "incident_id" in df.columns and incident_id in df["incident_id"].values:
+                if new_status:
+                    df.loc[df["incident_id"] == incident_id, "status"] = new_status
+                if feedback:
+                    df.loc[df["incident_id"] == incident_id, "analyst_feedback"] = feedback
+                df.to_csv(_INCIDENTS_CSV, index=False)
+        except Exception as e:
+            print("Failed to update incident in CSV:", e)
+
+    return jsonify({
+        "success": True,
+        "incident_id": incident_id,
+        "status": new_status or "Updated",
+        "feedback": feedback
+    })

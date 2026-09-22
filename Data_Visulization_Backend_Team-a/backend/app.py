@@ -46,9 +46,14 @@ CORS(
 # --------------------------------------------------
 
 app.register_blueprint(events_bp,    url_prefix="/api")  # GET /api/events
-app.register_blueprint(stats_bp,     url_prefix="/api")  # GET /api/stats
+app.register_blueprint(stats_bp,     url_prefix="/api")  # GET /api/stats, /api/heatmap, /api/audit
 app.register_blueprint(threats_bp,   url_prefix="/api")  # GET /api/threats
-app.register_blueprint(auth_bp)                          # POST /api/login  POST /api/signup
+app.register_blueprint(auth_bp)                          # POST /api/login  POST /api/signup  GET /api/me
+
+# Direct alias for non-prefixed routes during dev
+app.register_blueprint(events_bp,    url_prefix="", name="events_root")
+app.register_blueprint(stats_bp,     url_prefix="", name="stats_root")
+app.register_blueprint(threats_bp,   url_prefix="", name="threats_root")
 
 
 # --------------------------------------------------
@@ -69,17 +74,18 @@ app.register_blueprint(prediction_bp, url_prefix="/api")
 # --------------------------------------------------
 
 app.register_blueprint(risk_bp,      url_prefix="/api/v1")
-# GET  /api/v1/risk/summary
-# GET  /api/v1/risk/high
-# POST /api/v1/risk/calculate
+app.register_blueprint(risk_bp,      url_prefix="/api", name="risk_api")
+# GET  /api/v1/risk/summary  &  /api/risk/summary
+# GET  /api/v1/risk/high     &  /api/risk/high
+# POST /api/v1/risk/calculate & /api/risk/calculate
 
 app.register_blueprint(incident_bp,  url_prefix="/api/v1")
-# GET  /api/v1/incidents
-# GET  /api/v1/incidents/<incident_id>
-# GET  /api/v1/attack-chains
-# GET  /api/v1/recommendations/<incident_id>
-# GET  /threat-summary
-# POST /predict
+app.register_blueprint(incident_bp,  url_prefix="/api", name="incident_api")
+# GET  /api/v1/incidents     &  /api/incidents
+# GET  /api/v1/incidents/<id>&  /api/incidents/<id>
+# POST /api/v1/incidents/<id>/status & /api/incidents/<id>/status
+# GET  /api/v1/attack-chains &  /api/attack-chains
+# GET  /api/v1/recommendations/<id>
 
 
 # --------------------------------------------------

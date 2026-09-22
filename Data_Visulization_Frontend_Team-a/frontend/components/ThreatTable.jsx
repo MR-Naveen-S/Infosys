@@ -105,9 +105,9 @@ export default function ThreatTable({ events = [], onSelectEvent }) {
   const getPredictionBadgeClass = (pred) => {
     const p = String(pred || '').toUpperCase();
     switch (p) {
-      case 'CRITICAL': return 'badge bg-danger text-white border border-danger';
-      case 'SUSPICIOUS': return 'badge bg-warning text-dark border border-warning';
-      default: return 'badge bg-success text-white border border-success';
+      case 'CRITICAL': return 'badge bg-danger-subtle text-danger border border-danger-subtle';
+      case 'SUSPICIOUS': return 'badge bg-warning-subtle text-warning border border-warning-subtle';
+      default: return 'badge bg-success-subtle text-success border border-success-subtle';
     }
   };
 

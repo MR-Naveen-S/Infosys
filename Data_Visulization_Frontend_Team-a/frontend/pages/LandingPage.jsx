@@ -91,7 +91,7 @@ export default function LandingPage({ onNavigate }) {
           {/* Pre-title Badge */}
           <div className="hero-badge">
             <span className="hero-badge-dot" />
-            AI-Driven Cybersecurity Operations &bull; Milestone 1 &bull; 2 &bull; 3
+            AI-Driven Cybersecurity Operations &bull; Milestones 1, 2, 3 &amp; 4 (Complete Platform)
           </div>
 
           {/* Headline */}
@@ -234,7 +234,7 @@ export default function LandingPage({ onNavigate }) {
             <span>CONFIDENTIAL &bull; INFOSYS DEFENSE OPERATIONS &bull; LEVEL 3 SOC CLEARANCE</span>
           </div>
           <div className="footer-right">
-            <span>ENGINEERING TEAM A &bull; MILESTONE 1, 2, 3 SUITE &copy; {new Date().getFullYear()}</span>
+            <span>ENGINEERING TEAM A &bull; MILESTONE 1, 2, 3 &amp; 4 SUITE &copy; {new Date().getFullYear()}</span>
           </div>
         </footer>
 

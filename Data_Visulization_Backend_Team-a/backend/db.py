@@ -39,7 +39,15 @@ FALLBACK_USERS_FILE = os.path.abspath(
     os.path.join(os.path.dirname(os.path.dirname(__file__)), "users_fallback.json")
 )
 
-# Primary CSV fallback source for events
+# Primary CSV fallback source for events (prefers fully correlated M1-M3 dataset)
+_CORRELATED_CSV_PATH = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "data", "processed",
+        "correlated_events.csv"
+    )
+)
+
 _CSV_PATH = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__),
@@ -226,21 +234,22 @@ def get_events_collection():
 def get_events_data():
     """
     Returns a list of event dicts from Security_db.processed_events.
-    Falls back to reading Security_db.processed_events.csv when MongoDB is
+    Falls back to reading correlated_events.csv or Security_db.processed_events.csv when MongoDB is
     unavailable.
     """
     events_col, _ = get_db()
     if events_col is not None:
         return list(events_col.find({}, {"_id": 0}))
 
-    # CSV Fallback
-    if os.path.exists(_CSV_PATH):
-        try:
-            df = pd.read_csv(_CSV_PATH)
-            df = df.fillna("")
-            return df.to_dict(orient="records")
-        except Exception as e:
-            print("Error loading CSV fallback:", e)
+    # CSV Fallback: Try richest correlated dataset first (M1 + M2 + M3)
+    for csv_file in [_CORRELATED_CSV_PATH, _CSV_PATH]:
+        if os.path.exists(csv_file):
+            try:
+                df = pd.read_csv(csv_file)
+                df = df.fillna("")
+                return df.to_dict(orient="records")
+            except Exception as e:
+                print(f"Error loading {csv_file}:", e)
     return []
 
 

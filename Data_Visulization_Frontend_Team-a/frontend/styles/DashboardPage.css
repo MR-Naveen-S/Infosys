@@ -754,40 +754,126 @@
     color: #ffffff;
 }
 
+/* Header Action Toolbar Buttons */
+.header-action-btn {
+    background: rgba(16, 185, 129, 0.08);
+    color: var(--accent-mint, #10b981) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    height: 34px;
+    padding: 0 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.header-action-btn:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.6);
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+}
+
+.header-btn-csv {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff !important;
+    border: 1px solid #10b981;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    height: 34px;
+    padding: 0 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-btn-csv:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5);
+    filter: brightness(1.08);
+}
+
+.header-btn-pdf {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff !important;
+    border: 1px solid #3b82f6;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    height: 34px;
+    padding: 0 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header-btn-pdf:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.5);
+    filter: brightness(1.08);
+}
+
 .dashboard-body .table-responsive {
     width: 100%;
     overflow-x: auto;
 }
 
-.dashboard-body table {
+.dashboard-body table,
+.dashboard-body .table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
     font-size: 13.5px;
+    background-color: transparent !important;
+    --bs-table-bg: transparent !important;
+    --bs-table-color: var(--text-primary) !important;
+    --bs-table-border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
 }
 
-.dashboard-body th {
+.dashboard-body table > :not(caption) > * > *,
+.dashboard-body .table > :not(caption) > * > * {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: var(--text-primary) !important;
+}
+
+.dashboard-body th,
+.dashboard-body .table th {
     padding: 12px 16px;
     font-size: 11px;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-secondary) !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-color) !important;
+    background-color: transparent !important;
 }
 
-.dashboard-body td {
-    padding: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-    color: var(--text-primary);
+.dashboard-body td,
+.dashboard-body .table td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
 }
 
 .dashboard-body tr {
     transition: background-color 0.2s ease;
 }
 
-.dashboard-body tr:hover td {
-    background-color: rgba(255, 255, 255, 0.01);
+.dashboard-body tr:hover td,
+.dashboard-body .table tr:hover td {
+    background-color: rgba(16, 185, 129, 0.04) !important;
 }
 
 /* Badges */
@@ -804,27 +890,27 @@
 }
 
 .dashboard-body .badge-critical {
-    background-color: rgba(239, 68, 68, 0.08);
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    color: var(--severity-critical);
+    background-color: rgba(239, 68, 68, 0.12) !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+    color: var(--severity-critical) !important;
 }
 
 .dashboard-body .badge-warning {
-    background-color: rgba(245, 158, 11, 0.08);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-    color: var(--severity-warning);
+    background-color: rgba(245, 158, 11, 0.12) !important;
+    border: 1px solid rgba(245, 158, 11, 0.3) !important;
+    color: var(--severity-warning) !important;
 }
 
 .dashboard-body .badge-info {
-    background-color: rgba(59, 130, 246, 0.08);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    color: var(--severity-info);
+    background-color: rgba(59, 130, 246, 0.12) !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+    color: var(--severity-info) !important;
 }
 
 .dashboard-body .badge-low {
-    background-color: rgba(16, 185, 129, 0.08);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    color: var(--severity-low);
+    background-color: rgba(16, 185, 129, 0.12) !important;
+    border: 1px solid rgba(16, 185, 129, 0.3) !important;
+    color: var(--severity-low) !important;
 }
 
 /* Operator Actions */
@@ -2640,6 +2726,45 @@ input[type="range"].accent-success {
 .light-theme .btn-sidebar-toggle:hover {
     background-color: #f8fafc !important;
     border-color: #059669 !important;
+}
+
+.light-theme .header-action-btn {
+    background: #ffffff !important;
+    border: 1.5px solid #059669 !important;
+    color: #059669 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 4px rgba(5, 150, 105, 0.1) !important;
+}
+
+.light-theme .header-action-btn:hover {
+    background: #ecfdf5 !important;
+    border-color: #047857 !important;
+    color: #047857 !important;
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2) !important;
+}
+
+.light-theme .header-btn-csv {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    border: 1px solid #047857 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25) !important;
+}
+
+.light-theme .header-btn-csv:hover {
+    filter: brightness(1.08) !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35) !important;
+}
+
+.light-theme .header-btn-pdf {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+    border: 1px solid #1d4ed8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+}
+
+.light-theme .header-btn-pdf:hover {
+    filter: brightness(1.08) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35) !important;
 }
 
 /* ── KPI Cards ──────────────────────────────────────────────────────────── */

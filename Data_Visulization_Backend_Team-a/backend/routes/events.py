@@ -5,20 +5,20 @@ events_bp = Blueprint("events", __name__)
 
 
 def map_event_to_frontend(event):
-    evt_id_str = event.get("event_id", "")
+    evt_id_str = str(event.get("event_id", ""))
     try:
         numeric_id = int(''.join(filter(str.isdigit, str(evt_id_str))))
     except ValueError:
         numeric_id = 0
 
-    timestamp_str = event.get("timestamp", "")
+    timestamp_str = str(event.get("timestamp", ""))
     time_str = ""
-    if timestamp_str and " " in str(timestamp_str):
-        time_str = str(timestamp_str).split(" ")[1]
-    elif timestamp_str and "T" in str(timestamp_str):
-        time_str = str(timestamp_str).split("T")[1][:8]
+    if timestamp_str and " " in timestamp_str:
+        time_str = timestamp_str.split(" ")[1]
+    elif timestamp_str and "T" in timestamp_str:
+        time_str = timestamp_str.split("T")[1][:8]
     else:
-        time_str = str(timestamp_str)
+        time_str = timestamp_str
 
     raw_severity = str(event.get("severity", "")).lower()
     if raw_severity == "critical":
@@ -29,31 +29,63 @@ def map_event_to_frontend(event):
         severity = "LOW"
 
     raw_status = str(event.get("status", event.get("event_status", ""))).lower()
-    if raw_status in ["blocked", "failed"]:
+    if raw_status in ["blocked", "failed", "resolved"]:
         status = "RESOLVED"
     else:
         status = "UNRESOLVED"
 
     is_high_risk = event.get("is_high_risk")
-    if isinstance(is_high_risk, str):
-        is_high_risk_bool = is_high_risk.lower() == "true"
+    if is_high_risk is not None:
+        if isinstance(is_high_risk, str):
+            is_high_risk_bool = is_high_risk.lower() in ["true", "1", "yes"]
+        else:
+            is_high_risk_bool = bool(is_high_risk)
     else:
-        is_high_risk_bool = bool(is_high_risk)
+        try:
+            r_score = float(event.get("risk_score", 0) or 0)
+        except (ValueError, TypeError):
+            r_score = 0
+        is_high_risk_bool = (severity == "CRITICAL" or r_score >= 70)
 
-    return {
-        "id": numeric_id,
+    # Preserve and normalize all enriched M1/M2/M3 fields
+    out = dict(event)
+    out.update({
+        "id": evt_id_str or numeric_id,
+        "event_id": evt_id_str or f"EVT{numeric_id:05d}",
         "time": time_str,
         "timestamp": timestamp_str,
-        "name": event.get("event_type", "Unknown Event"),
-        "event_type": event.get("event_type", "Unknown Event"),
-        "source": event.get("username", "System"),
+        "name": event.get("event_type", event.get("name", "Unknown Event")),
+        "event_type": event.get("event_type", event.get("name", "Unknown Event")),
+        "source": event.get("source_ip", event.get("username", "System")),
         "source_ip": event.get("source_ip", ""),
-        "target": event.get("asset_name", ""),
+        "target": event.get("asset_name", event.get("destination_ip", "")),
         "destination_ip": event.get("destination_ip", ""),
+        "asset_name": event.get("asset_name", event.get("target", "")),
+        "username": event.get("username", ""),
         "severity": severity,
+        "raw_severity": event.get("severity", "Low"),
         "status": status,
-        "is_high_risk": is_high_risk_bool
-    }
+        "is_high_risk": is_high_risk_bool,
+        "cvss_score": event.get("cvss_score", 0),
+        "vulnerability_id": event.get("vulnerability_id", event.get("cve_id", "")),
+        "cve_id": event.get("cve_id", event.get("vulnerability_id", "")),
+        "mitre_id": event.get("mitre_id", ""),
+        "technique_name": event.get("technique_name", ""),
+        "tactic": event.get("tactic", ""),
+        "ioc_match": str(event.get("ioc_match", "False")).lower() in ["true", "1", "yes"],
+        "threat_actor": event.get("threat_actor", ""),
+        "prediction": event.get("prediction", "Normal" if severity == "LOW" else "Suspicious"),
+        "confidence": event.get("confidence_score", event.get("confidence", 85)),
+        "confidence_score": event.get("confidence_score", event.get("confidence", 85)),
+        "anomaly_score": event.get("anomaly_score", 0.0),
+        "risk_score": event.get("risk_score", 0.0),
+        "risk_class": event.get("risk_class", "Low"),
+        "priority": event.get("priority", "Low"),
+        "correlation_id": event.get("correlation_id", ""),
+        "department": event.get("department", ""),
+        "os": event.get("os", "")
+    })
+    return out
 
 
 # --------------------------------------------------
